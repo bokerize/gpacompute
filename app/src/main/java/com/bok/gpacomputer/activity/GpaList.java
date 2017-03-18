@@ -1,7 +1,9 @@
-package com.bok.gpacomputer;
+package com.bok.gpacomputer.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.bok.gpacomputer.R;
 
 public class GpaList extends AppCompatActivity {
 
