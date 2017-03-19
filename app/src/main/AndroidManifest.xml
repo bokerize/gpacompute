@@ -16,6 +16,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".db.GpaContentProvider"
+            android:authorities="com.bok.gpacomputer"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:label="GpaContentProvider"
+            android:readPermission="com.bok.gpacomputer.READ"
+            android:writePermission="com.bok.gpacomputer.WRITE" />
+
     </application>
 
 </manifest>
