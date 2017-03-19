@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import com.bok.gpacomputer.R;
 import com.bok.gpacomputer.db.GpaContentContract;
@@ -18,7 +19,7 @@ import com.bok.gpacomputer.view.TranscriptLineRecyclerViewAdapter;
 
 import java.util.List;
 
-public class GpaListActivity extends AppCompatActivity {
+public class GpaListActivity extends AppCompatActivity implements TranscriptLineRecyclerViewAdapter.ItemClickListener {
 
     private TranscriptLineRecyclerViewAdapter adapter;
     private FloatingActionButton fabAdd;
@@ -41,13 +42,13 @@ public class GpaListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new TranscriptLineRecyclerViewAdapter(this, transList);
+        adapter.setItemClickListener(this);
         recyclerView.setAdapter(adapter);
 
-
         fabAdd = (FloatingActionButton) findViewById(R.id.fabAdd);
-        fabAdd.setOnClickListener((view) -> {
-            startActivity(new Intent(GpaListActivity.this, TranscriptLineActivity.class));
-        });
+        fabAdd.setOnClickListener(view ->
+            startActivity(new Intent(GpaListActivity.this, TranscriptLineActivity.class))
+        );
 
     }
 
@@ -56,6 +57,15 @@ public class GpaListActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        Intent editTranscriptLine = new Intent(this, TranscriptLineActivity.class);
+
+        TranscriptLine tLine = adapter.getItem(position);
+        editTranscriptLine.putExtra("ID", tLine.getId());
+
+        startActivity(editTranscriptLine);
+    }
 
 
 

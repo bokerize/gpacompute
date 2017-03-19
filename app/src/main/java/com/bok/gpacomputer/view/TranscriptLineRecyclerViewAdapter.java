@@ -22,6 +22,7 @@ public class TranscriptLineRecyclerViewAdapter extends RecyclerView.Adapter<Tran
 
     private List<TranscriptLine> mData = Collections.emptyList();
     private LayoutInflater mInflater;
+    private ItemClickListener itemClickListener;
 
     private static final String TAG = "TranscriptLineRecycler";
 
@@ -34,7 +35,7 @@ public class TranscriptLineRecyclerViewAdapter extends RecyclerView.Adapter<Tran
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        Log.d(TAG, "onCreateviewHolder list size " + mData.size());
+Log.d(TAG, "onCreateviewHolder list size " + mData.size());
 
         View view = mInflater.inflate(R.layout.transcript_list_recycler, parent, false);
         ViewHolder viewHolder = new TranscriptLineRecyclerViewAdapter.ViewHolder(view);
@@ -55,7 +56,7 @@ Log.d(TAG, "on bind view holder " + position + " [" + tLine.getCourseNo() + "]")
         return mData.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener{
         public TextView tvCourseNo;
         public TextView tvGrade;
 
@@ -64,12 +65,32 @@ Log.d(TAG, "on bind view holder " + position + " [" + tLine.getCourseNo() + "]")
 
             tvCourseNo = (TextView) itemView.findViewById(R.id.tvCourseNo);
             tvGrade = (TextView) itemView.findViewById(R.id.tvGrade);
+
+            tvCourseNo.setOnClickListener(this);
+            tvGrade.setOnClickListener(this);
+        }
+
+
+        @Override
+        public void onClick(View view) {
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(view, getAdapterPosition());
+            }
         }
     }
 
 
     public TranscriptLine getItem(int i) {
         return mData.get(i);
+    }
+
+
+    public interface ItemClickListener {
+        void onItemClick(View view, int position);
+    }
+    //alows click event to be caught
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
 }

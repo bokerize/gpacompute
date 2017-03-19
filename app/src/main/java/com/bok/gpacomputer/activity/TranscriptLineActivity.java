@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bok.gpacomputer.R;
@@ -29,6 +30,7 @@ public class TranscriptLineActivity extends AppCompatActivity {
     private EditText etCourseDesc;
     private EditText etGrade;
     private EditText etCredit;
+    private TextView tvId;
     private CoordinatorLayout layout;
     private FloatingActionButton fabSave;
 
@@ -43,6 +45,7 @@ public class TranscriptLineActivity extends AppCompatActivity {
         layout = (CoordinatorLayout) findViewById(R.id.clTranscriptLine);
         layout.setTag(TAG_ID, null);
 
+        tvId = (TextView) findViewById(R.id.tvId);
         etCourseNo = (EditText) findViewById(R.id.etCourseNo);
         etCourseDesc = (EditText) findViewById(R.id.etCourseDesc);
         etGrade = (EditText) findViewById(R.id.etGrade);
@@ -66,6 +69,8 @@ public class TranscriptLineActivity extends AppCompatActivity {
 
                 TranscriptLine tLine = (new TranscriptLineHelper().cursorToList(cursor)).get(0);
                 loadToScreen(tLine );
+
+                tvId.setText( String.valueOf(transLineId) );
             }
         }
     }
