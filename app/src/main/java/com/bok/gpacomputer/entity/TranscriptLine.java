@@ -1,10 +1,14 @@
 package com.bok.gpacomputer.entity;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.provider.BaseColumns;
 import android.util.StringBuilderPrinter;
 
 import com.bok.gpacomputer.db.SqlHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by JerichoJohn on 3/18/2017.
@@ -50,10 +54,30 @@ public class TranscriptLine {
     }
 
     public TranscriptLine(String courseNo, String courseDesc, String grade, Double credit) {
+        this(null, courseNo, courseDesc, grade, credit);
+    }
+
+    public TranscriptLine(Long id, String courseNo, String courseDesc, String grade, Double credit) {
+        this.id = id;
         this.courseNo = courseNo;
         this.courseDesc = courseDesc;
         this.grade = grade;
         this.credit = credit;
+    }
+
+    public List<TranscriptLine> cursorToList(Cursor cursor) {
+        List<TranscriptLine> list = new ArrayList<>();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                list.add(new TranscriptLine(cursor.getLong(0),
+                                            cursor.getString(1),
+                                            cursor.getString(2),
+                                            cursor.getString(3),
+                                            cursor.getDouble(4))
+                );
+            } while(cursor.moveToNext());
+        }
+        return list;
     }
 
     public ContentValues toContentValues() {

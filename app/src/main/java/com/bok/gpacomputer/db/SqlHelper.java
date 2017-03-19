@@ -1,10 +1,15 @@
 package com.bok.gpacomputer.db;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.bok.gpacomputer.entity.TranscriptLine;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by JerichoJohn on 3/18/2017.
@@ -38,5 +43,6 @@ public class SqlHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TranscriptLine.TABLE_NAME);
         onCreate(db);
     }
+
 
 }
