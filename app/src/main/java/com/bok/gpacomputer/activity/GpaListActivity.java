@@ -1,8 +1,11 @@
 package com.bok.gpacomputer.activity;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.provider.BaseColumns;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.bok.gpacomputer.R;
 import com.bok.gpacomputer.db.GpaContentContract;
@@ -19,7 +23,7 @@ import com.bok.gpacomputer.view.TranscriptLineRecyclerViewAdapter;
 
 import java.util.List;
 
-public class GpaListActivity extends AppCompatActivity implements TranscriptLineRecyclerViewAdapter.ItemClickListener {
+public class GpaListActivity extends AppCompatActivity implements TranscriptLineRecyclerViewAdapter.ItemClickListener, TranscriptLineRecyclerViewAdapter.ItemLongClickListener {
 
     private TranscriptLineRecyclerViewAdapter adapter;
     private FloatingActionButton fabAdd;
@@ -43,13 +47,13 @@ public class GpaListActivity extends AppCompatActivity implements TranscriptLine
 
         adapter = new TranscriptLineRecyclerViewAdapter(this, transList);
         adapter.setItemClickListener(this);
+        adapter.setItemLongClickListener(this);
         recyclerView.setAdapter(adapter);
 
         fabAdd = (FloatingActionButton) findViewById(R.id.fabAdd);
         fabAdd.setOnClickListener(view ->
             startActivity(new Intent(GpaListActivity.this, TranscriptLineActivity.class))
         );
-
     }
 
     @Override
@@ -67,6 +71,18 @@ public class GpaListActivity extends AppCompatActivity implements TranscriptLine
         startActivity(editTranscriptLine);
     }
 
+    @Override
+    public boolean onItemLongClick(View view, int position) {
+
+        TranscriptLine tLine = adapter.getItem(position);
+
+        Uri uri = ContentUris.withAppendedId(GpaContentContract.TranscriptLine.CONTENT_URI, tLine.getId());
+        getContentResolver().delete(uri, BaseColumns._ID + " = ?", new String[] {String.valueOf(tLine.getId())});
+
+        Toast.makeText(this, "record deleted", Toast.LENGTH_SHORT);
+
+        return true;
+    }
 
 
 }
