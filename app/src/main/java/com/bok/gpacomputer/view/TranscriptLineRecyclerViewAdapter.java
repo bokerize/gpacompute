@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bok.gpacomputer.R;
 import com.bok.gpacomputer.entity.TranscriptLine;
@@ -27,10 +28,11 @@ public class TranscriptLineRecyclerViewAdapter extends RecyclerView.Adapter<Tran
     private LayoutInflater mInflater;
     private ItemClickListener itemClickListener;
     private ItemLongClickListener itemLongClickListener;
-
+    private Context context;
     private static final String TAG = "TranscriptLineRecycler";
 
     public TranscriptLineRecyclerViewAdapter(Context context, List<TranscriptLine> data) {
+        this.context = context;
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -71,17 +73,21 @@ Log.d(TAG, "on bind view holder " + position + " [" + tLine.getCourseNo() + "]")
             super(itemView);
 
             tvCourseNo = (TextView) itemView.findViewById(R.id.tvCourseNo);
-            tvGrade = (TextView) itemView.findViewById(R.id.tvGrade);
-            gridLayout = (GridLayout) itemView.findViewById(R.id.gridLayout);
-            linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout);
-
             tvCourseNo.setOnClickListener(this);
-            tvGrade.setOnClickListener(this);
-            linearLayout.setOnClickListener(this);
-
-            gridLayout.setOnLongClickListener(this);
             tvCourseNo.setOnLongClickListener(this);
+
+            tvGrade = (TextView) itemView.findViewById(R.id.tvGrade);
+            tvGrade.setOnClickListener(this);
             tvGrade.setOnLongClickListener(this);
+
+            gridLayout = (GridLayout) itemView.findViewById(R.id.gridLayout);
+            gridLayout.setClickable(true);
+            gridLayout.setOnClickListener(this);
+            gridLayout.setOnLongClickListener(this);
+
+            linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout);
+            linearLayout.setClickable(true);
+            linearLayout.setOnClickListener(this);
             linearLayout.setOnLongClickListener(this);
 
         }
@@ -90,7 +96,9 @@ Log.d(TAG, "on bind view holder " + position + " [" + tLine.getCourseNo() + "]")
         @Override
         public void onClick(View view) {
             if (itemClickListener != null) {
+Log.d(TAG, "onClick -- 1");
                 itemClickListener.onItemClick(view, getAdapterPosition());
+    Log.d(TAG, "onClick --2 ");
             }
         }
 
@@ -100,9 +108,13 @@ Log.d(TAG, "on bind view holder " + position + " [" + tLine.getCourseNo() + "]")
 
                 itemLongClickListener.onItemLongClick(view, getAdapterPosition());
 
+                Toast.makeText(context, "record deleted", Toast.LENGTH_SHORT);
+
                 mData.remove(getAdapterPosition());
                 notifyItemRemoved(getAdapterPosition());
                 notifyItemRangeChanged(getAdapterPosition(), mData.size());
+
+                Toast.makeText(context, "record deleted 2", Toast.LENGTH_SHORT);
 
             }
             return false;
@@ -114,11 +126,9 @@ Log.d(TAG, "on bind view holder " + position + " [" + tLine.getCourseNo() + "]")
         return mData.get(i);
     }
 
-
     public interface ItemLongClickListener {
         boolean onItemLongClick(View view, int position);
     }
-
 
     public interface ItemClickListener {
         void onItemClick(View view, int position);
