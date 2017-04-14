@@ -110,17 +110,38 @@ Log.d(TAG, "onClick -- 1");
 
                 Toast.makeText(context, "record deleted", Toast.LENGTH_SHORT);
 
-                mData.remove(getAdapterPosition());
-                notifyItemRemoved(getAdapterPosition());
-                notifyItemRangeChanged(getAdapterPosition(), mData.size());
+                removeOnAdapterPosition();
 
                 Toast.makeText(context, "record deleted 2", Toast.LENGTH_SHORT);
 
             }
             return false;
         }
+
+        public void removeOnAdapterPosition() {
+            mData.remove(getAdapterPosition());
+            notifyItemRemoved(getAdapterPosition());
+            notifyItemRangeChanged(getAdapterPosition(), mData.size());
+
+        }
     }
 
+
+
+    public void updateData(List<TranscriptLine> tLineList) {
+        mData.clear();
+        mData.addAll(tLineList);
+        notifyDataSetChanged();
+    }
+//    public void addItem(int position, ViewModel viewModel) {
+//        items.add(position, viewModel);
+//        notifyItemInserted(position);
+//    }
+
+//    public void removeItem(int position) {
+//        items.remove(position);
+//        notifyItemRemoved(position);
+//    }
 
     public TranscriptLine getItem(int i) {
         return mData.get(i);
@@ -142,5 +163,9 @@ Log.d(TAG, "onClick -- 1");
         this.itemLongClickListener = itemLongClickListener;
     }
 
+
+//    public interface RecyclerViewUtil {
+//        void removeOnAdapterPosition();
+//    }
 
 }

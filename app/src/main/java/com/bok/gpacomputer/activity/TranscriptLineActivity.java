@@ -20,6 +20,9 @@ import com.bok.gpacomputer.db.GpaContentContract;
 import com.bok.gpacomputer.db.TranscriptLineHelper;
 import com.bok.gpacomputer.entity.TranscriptLine;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 /**
  * Created by JerichoJohn on 3/19/2017.
  */
@@ -77,13 +80,56 @@ public class TranscriptLineActivity extends AppCompatActivity {
 
 
     public void onPause() {
-        Log.d(TAG, "Pause 1");
-        saveToDb();
+        Log.d(TAG, "Pause 1 --> " + isAllEmpty());
+        if (!isAllEmpty()) {
+            saveToDb();
+        }
         Log.d(TAG, "Pause 2");
+
         super.onPause();
     }
 
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed() 1 ");
 
+        if (isAllEmpty()) {
+            Log.d(TAG, "onBackPressed() 2 ALL EMPTY ");
+            Long id = (Long) layout.getTag(TAG_ID);
+
+            if (id != null) {
+                deleteCurrent();
+            }
+
+        }
+
+        Intent intent = new Intent();
+        intent.putExtra("is_refresh_list", "Y");
+        setResult(RESULT_OK, intent);
+
+Log.d(TAG, "onBackPressed() 2 ");
+        super.onBackPressed();
+
+        finish();
+
+    }
+
+    public boolean isAllEmpty() {
+        return (StringUtils.isEmpty(StringUtils.trim(etCourseNo.getText().toString()))
+                && StringUtils.isEmpty(StringUtils.trim(etCourseDesc.getText().toString()))
+                && StringUtils.isEmpty(StringUtils.trim(etGrade.getText().toString()))
+                );
+    }
+
+
+    public void deleteCurrent() {
+        Long id = (Long) layout.getTag(TAG_ID);
+        if (id != null) {
+            Uri uri = ContentUris.withAppendedId(GpaContentContract.TranscriptLine.CONTENT_URI, id);
+            getContentResolver().delete(uri, BaseColumns._ID + " = ?", new String[] {String.valueOf(id)});
+        }
+
+    }
     public void saveToDb() {
         Log.d(TAG, "Save tO DB");
         TranscriptLine tLine = new TranscriptLine();
@@ -93,7 +139,7 @@ public class TranscriptLineActivity extends AppCompatActivity {
         tLine.setCourseNo(etCourseNo.getText().toString());
         tLine.setCourseDesc(etCourseDesc.getText().toString());
         tLine.setGrade(etGrade.getText().toString());
-        tLine.setCredit(tLine.getCredit());
+        tLine.setCredit( NumberUtils.toDouble(etCredit.getText().toString(), 0));
 
         ContentValues contentValues = new TranscriptLineHelper().toContentValues(tLine);
         if (id != null) {

@@ -9,7 +9,9 @@
     android:layout_marginLeft="@dimen/transcript_list_margin"
     android:layout_marginRight="@dimen/transcript_list_margin"
     android:layout_marginBottom="@dimen/transcript_list_margin"
-    android:id="@+id/linearLayout">
+    android:id="@+id/linearLayout"
+    >
+
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridLayout"

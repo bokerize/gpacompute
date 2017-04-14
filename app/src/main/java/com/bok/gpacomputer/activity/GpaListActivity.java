@@ -9,6 +9,7 @@ import android.provider.BaseColumns;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,7 +24,11 @@ import com.bok.gpacomputer.view.TranscriptLineRecyclerViewAdapter;
 
 import java.util.List;
 
+import static com.bok.gpacomputer.util.Util.ACT_FLAG_OPEN_TASK_LINE;
+
 public class GpaListActivity extends AppCompatActivity implements TranscriptLineRecyclerViewAdapter.ItemClickListener, TranscriptLineRecyclerViewAdapter.ItemLongClickListener {
+
+
 
     private TranscriptLineRecyclerViewAdapter adapter;
     private FloatingActionButton fabAdd;
@@ -35,15 +40,13 @@ public class GpaListActivity extends AppCompatActivity implements TranscriptLine
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gpa_list);
 
-        Log.d(TAG, "list activity 1 " );
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvTranscriptList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         ContentResolver contentResolver = getContentResolver();
         Cursor cursor = contentResolver.query(GpaContentContract.TranscriptLine.CONTENT_URI, TranscriptLine.ALL_COLUMNS, null, null, null);
         List<TranscriptLine> transList = new TranscriptLineHelper().cursorToList(cursor);
 
-        Log.d(TAG, "list activity 2 list size " + transList.size());
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvTranscriptList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new TranscriptLineRecyclerViewAdapter(this, transList);
         adapter.setItemClickListener(this);
@@ -52,7 +55,7 @@ public class GpaListActivity extends AppCompatActivity implements TranscriptLine
 
         fabAdd = (FloatingActionButton) findViewById(R.id.fabAdd);
         fabAdd.setOnClickListener(view ->
-            startActivity(new Intent(GpaListActivity.this, TranscriptLineActivity.class))
+            startActivityForResult(new Intent(GpaListActivity.this, TranscriptLineActivity.class), ACT_FLAG_OPEN_TASK_LINE)
         );
     }
 
@@ -68,7 +71,7 @@ public class GpaListActivity extends AppCompatActivity implements TranscriptLine
         TranscriptLine tLine = adapter.getItem(position);
         editTranscriptLine.putExtra("ID", tLine.getId());
 
-        startActivity(editTranscriptLine);
+        startActivityForResult(editTranscriptLine, ACT_FLAG_OPEN_TASK_LINE);
     }
 
     @Override
@@ -82,6 +85,28 @@ public class GpaListActivity extends AppCompatActivity implements TranscriptLine
         Toast.makeText(this, "record deleted", Toast.LENGTH_SHORT);
 
         return true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ACT_FLAG_OPEN_TASK_LINE) {
+
+            if (resultCode == RESULT_OK) {
+                adapter.notifyDataSetChanged();
+                if (data != null && "Y".equals(data.getStringExtra("is_refresh_list"))) {
+
+                    refreshData();
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void refreshData() {
+        ContentResolver contentResolver = getContentResolver();
+        Cursor cursor = contentResolver.query(GpaContentContract.TranscriptLine.CONTENT_URI, TranscriptLine.ALL_COLUMNS, null, null, null);
+        List<TranscriptLine> transList = new TranscriptLineHelper().cursorToList(cursor);
+        adapter.updateData(transList);
     }
 
 
