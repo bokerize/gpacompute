@@ -28,8 +28,6 @@ import static com.bok.gpacomputer.util.Util.ACT_FLAG_OPEN_TASK_LINE;
 
 public class GpaListActivity extends AppCompatActivity implements TranscriptLineRecyclerViewAdapter.ItemClickListener, TranscriptLineRecyclerViewAdapter.ItemLongClickListener {
 
-
-
     private TranscriptLineRecyclerViewAdapter adapter;
     private FloatingActionButton fabAdd;
 
@@ -56,7 +54,18 @@ public class GpaListActivity extends AppCompatActivity implements TranscriptLine
         fabAdd = (FloatingActionButton) findViewById(R.id.fabAdd);
         fabAdd.setOnClickListener(view ->
             startActivityForResult(new Intent(GpaListActivity.this, TranscriptLineActivity.class), ACT_FLAG_OPEN_TASK_LINE)
+//            startActivityForResult(new Intent(GpaListActivity.this, CombinedActivity.class), ACT_FLAG_OPEN_TASK_LINE)
         );
+//        fabAdd.setOnLongClickListener(view ->
+//                startActivityForResult(new Intent(GpaListActivity.this, CombinedActivity.class), ACT_FLAG_OPEN_TASK_LINE)
+//        );
+        fabAdd.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                startActivityForResult(new Intent(GpaListActivity.this, CombinedActivity.class), ACT_FLAG_OPEN_TASK_LINE);
+                return false;
+            }
+        });
     }
 
     @Override

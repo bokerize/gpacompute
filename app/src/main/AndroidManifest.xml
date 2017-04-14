@@ -18,6 +18,9 @@
         </activity>
         <activity android:name=".activity.TranscriptLineActivity">
         </activity>
+        <activity android:name=".activity.CombinedActivity">
+        </activity>
+
         <provider
             android:name=".db.GpaContentProvider"
             android:authorities="com.bok.gpacomputer"
